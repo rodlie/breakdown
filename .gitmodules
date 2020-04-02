@@ -1,0 +1,3 @@
+[submodule "breakpad"]
+	path = breakpad
+	url = https://github.com/NatronGitHub/breakpad
