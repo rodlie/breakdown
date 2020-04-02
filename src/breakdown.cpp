@@ -80,7 +80,7 @@ const std::string BreakDown::convertDumpToString(const std::string &fileName,
 
     int requesting_thread = process_state.requesting_thread();
     if (process_state.crashed() && requesting_thread != -1) {
-        txt.append("\n### CRASH REPORT ### \n\n");
+        //txt.append("\n### CRASH REPORT ### \n\n");
         txt.append(std::string("OS       : ").append(process_state.system_info()->os + " (" + process_state.system_info()->os_version +  ")\n"));
         txt.append(std::string("TYPE     : ").append(process_state.crash_reason() + "\n\n"));
 
