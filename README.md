@@ -2,6 +2,8 @@
 
 A library for parsing Google Breakpad crash dumps.
 
+Requires CMake (3.0+), a c++11 compatible compiler (only GCC tested) and libzip.
+
 ```
 git clone https://github.com/rodlie/breakdown
 cd breakdown
