@@ -67,3 +67,14 @@ symbols
 
 2 directories, 1 file
 ```
+
+## Usage
+
+```
+#include <breakdown.h>
+
+std::string filename = "crash.dmp";
+std::vector<std::string> storage;
+storage.push_back("symbols");
+std::string result = Breakdown::convertDumpToString(filename, storage);
+```
