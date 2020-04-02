@@ -1,0 +1,16 @@
+sudo: required
+dist: trusty
+
+language: cpp
+
+compiler:
+  - gcc
+
+install:
+  - sudo apt-get install -y libzip-dev cmake
+
+script:
+  - git submodule update -i --recursive
+  - mkdir build && cd build
+  - cmake ..
+  - make
