@@ -33,10 +33,18 @@
 cmake_minimum_required(VERSION 3.0)
 project(Breakdown VERSION 1.0.0)
 
+include(GNUInstallDirs)
+
 set(CMAKE_CXX_STANDARD 11)
 set(BREAKPAD_SRC ${CMAKE_CURRENT_SOURCE_DIR}/breakpad)
 set(BREAKPAD_BIN ${CMAKE_BINARY_DIR}/breakpad)
 set(BREAKDOWN ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set(LIB_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR})
+else()
+    set(LIB_INSTALL_DIR ${CMAKE_INSTALL_FULL_LIBDIR})
+endif()
 
 file(MAKE_DIRECTORY ${BREAKPAD_BIN})
 
@@ -44,6 +52,10 @@ find_package(PkgConfig REQUIRED)
 find_package(Git QUIET)
 
 pkg_search_module(ZIP REQUIRED libzip)
+
+configure_file(${BREAKDOWN}/breakdown.pc.in
+               ${CMAKE_CURRENT_BINARY_DIR}/breakdown.pc
+               @ONLY)
 
 if(NOT EXISTS ${BREAKPAD_SRC}/configure)
     execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
@@ -54,11 +66,11 @@ if(NOT EXISTS ${BREAKPAD_SRC}/configure)
     endif()
 endif()
 
-# ugly, should be fixed
 option(MXE32_STATIC "Build using MXE i686 static" OFF)
 option(MXE64_STATIC "Build using MXE x86_64 static" OFF)
 option(MXE32_SHARED "Build using MXE i686 shared" OFF)
 option(MXE64_SHARED "Build using MXE x86_64 shared" OFF)
+
 if(NOT EXISTS ${BREAKPAD_BIN}/src/libbreakpad.a)
     message("-- MISSING BREAKPAD (will try to build)")
     if(MXE32_STATIC)
@@ -94,20 +106,41 @@ add_library(
     ${BREAKDOWN}/breakdown.cpp
 )
 
+set_target_properties(
+    ${PROJECT_NAME}
+    PROPERTIES
+    VERSION
+    ${PROJECT_VERSION}
+)
+set_target_properties(
+    ${PROJECT_NAME}
+    PROPERTIES
+    SOVERSION
+    ${PROJECT_VERSION_MAJOR}
+)
+
 target_link_libraries(
     ${PROJECT_NAME}
     ${BREAKPAD_BIN}/src/libbreakpad.a
     ${BREAKPAD_BIN}/src/third_party/libdisasm/libdisasm.a
-    ${ZIP_STATIC_LIBRARIES}
+    ${ZIP_LIBRARIES}
 )
 
 if(UNIX AND NOT APPLE)
-    include(GNUInstallDirs)
-    install(
-        FILES
-        LICENSE
-        README.md
-        DESTINATION
-        ${CMAKE_INSTALL_DOCDIR}-${PROJECT_VERSION}
-    )
+    install(FILES
+            LICENSE
+            README.md
+            DESTINATION
+            ${CMAKE_INSTALL_DOCDIR}-${PROJECT_VERSION})
+    install(FILES
+            ${CMAKE_CURRENT_BINARY_DIR}/breakdown.pc
+            DESTINATION
+            ${LIB_INSTALL_DIR}/pkgconfig)
+    install(TARGETS
+            ${PROJECT_NAME}
+            DESTINATION
+            ${LIB_INSTALL_DIR})
+    install(FILES
+            ${BREAKDOWN}/breakdown.h
+            DESTINATION include/${PROJECT_NAME})
 endif()

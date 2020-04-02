@@ -1,0 +1,12 @@
+prefix="@CMAKE_INSTALL_PREFIX@"
+exec_prefix="${prefix}"
+libdir="${prefix}/@CMAKE_INSTALL_LIBDIR@"
+includedir="${prefix}/include/Breakdown"
+
+Name: Breakdown
+Description: A library for parsing Google Breakpad crash dumps
+URL: https://github.com/rodlie/breakdown
+Version: @PROJECT_VERSION@
+Requires: libzip
+Cflags: -I"${includedir}"
+Libs: -L"${libdir}" -lBreakdown
