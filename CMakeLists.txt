@@ -99,48 +99,52 @@ include_directories(
     ${ZIP_INCLUDE_DIRS}
 )
 
-add_library(
-    ${PROJECT_NAME}
-    SHARED
-    ${BREAKDOWN}/breakdown.h
-    ${BREAKDOWN}/breakdown.cpp
+add_executable(stackwalker ${BREAKDOWN}/main.cpp)
+target_link_libraries(stackwalker ${PROJECT_NAME})
+
+add_library(${PROJECT_NAME}
+            SHARED
+            ${BREAKDOWN}/breakdown.h
+            ${BREAKDOWN}/breakdown.cpp
 )
 
-set_target_properties(
-    ${PROJECT_NAME}
-    PROPERTIES
-    VERSION
-    ${PROJECT_VERSION}
-)
-set_target_properties(
-    ${PROJECT_NAME}
-    PROPERTIES
-    SOVERSION
-    ${PROJECT_VERSION_MAJOR}
+set_target_properties(${PROJECT_NAME}
+                      PROPERTIES
+                      VERSION
+                      ${PROJECT_VERSION}
 )
 
-target_link_libraries(
-    ${PROJECT_NAME}
-    ${BREAKPAD_BIN}/src/libbreakpad.a
-    ${BREAKPAD_BIN}/src/third_party/libdisasm/libdisasm.a
-    ${ZIP_LIBRARIES}
+set_target_properties(${PROJECT_NAME}
+                      PROPERTIES
+                      SOVERSION
+                      ${PROJECT_VERSION_MAJOR}
 )
 
-if(UNIX AND NOT APPLE)
+target_link_libraries(${PROJECT_NAME}
+                      ${BREAKPAD_BIN}/src/libbreakpad.a
+                      ${BREAKPAD_BIN}/src/third_party/libdisasm/libdisasm.a
+                      ${ZIP_LIBRARIES}
+)
+
+if(NOT APPLE)
     install(FILES
             LICENSE
             README.md
             DESTINATION
-            ${CMAKE_INSTALL_DOCDIR}-${PROJECT_VERSION})
+            ${CMAKE_INSTALL_DOCDIR}-${PROJECT_VERSION}
+    )
     install(FILES
             ${CMAKE_CURRENT_BINARY_DIR}/breakdown.pc
             DESTINATION
-            ${LIB_INSTALL_DIR}/pkgconfig)
+            ${LIB_INSTALL_DIR}/pkgconfig
+    )
     install(TARGETS
             ${PROJECT_NAME}
             DESTINATION
-            ${LIB_INSTALL_DIR})
+            ${LIB_INSTALL_DIR}
+    )
     install(FILES
             ${BREAKDOWN}/breakdown.h
-            DESTINATION include/${PROJECT_NAME})
+            DESTINATION include/${PROJECT_NAME}
+    )
 endif()
