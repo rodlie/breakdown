@@ -1,6 +1,8 @@
 # Breakdown
 
-A library for parsing Google Breakpad crash dumps.
+A library for parsing Google Breakpad crash dumps on Windows (MinGW-only), macOS (untested) and Linux.
+
+This library uses a fork of Google Breakpad.
 
 ## Build and install
 Requires CMake (3.0+), a c++11 compatible compiler (only GCC tested) and libzip.
@@ -47,7 +49,7 @@ Example : ``MODULE Linux x86_64 69CDA01A0F236F7C71CD19E5A20A21AC0 Natron-bin``
 
 **Note that Breakdown only supports zipped symbols (``filename.sym.zip``)**
 
-## Create symbols
+## Creating Symbols
 
 Example:
 ```
@@ -68,7 +70,7 @@ symbols
 2 directories, 1 file
 ```
 
-## Usage
+## Usage Example
 
 ```
 #include <breakdown.h>
