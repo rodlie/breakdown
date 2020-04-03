@@ -18,6 +18,9 @@ make DESTDIR=<PACKAGE_LOCATION> install
 ```
 <PACKAGE_LOCATION>
 └── usr
+    ├── bin
+    │   ├── breakdown-dumper
+    │   └── breakdown-parser
     ├── include
     │   └── Breakdown
     │       └── breakdown.h
@@ -31,6 +34,7 @@ make DESTDIR=<PACKAGE_LOCATION> install
         └── doc
             └── Breakdown-1.0.0
                 ├── LICENSE
+                ├── LICENSE.breakpad
                 └── README.md
 ```
 
@@ -54,7 +58,7 @@ Example : ``MODULE Linux x86_64 69CDA01A0F236F7C71CD19E5A20A21AC0 Natron-bin``
 Example:
 ```
 
-dump_syms Natron-bin > Natron-bin.sym
+breakdown-dumper Natron-bin > Natron-bin.sym
 export SYMBOL_BIN=`head -1 Natron-bin.sym | awk '{print $5}'`
 export SYMBOL_ID=`head -1 Natron-bin.sym | awk '{print $4}'`
 mkdir -p symbols/$SYMBOL_BIN/$SYMBOL_ID
@@ -84,7 +88,7 @@ std::string result = Breakdown::convertDumpToString(filename, storage);
 ## Usage Example (application)
 
 ```
-stackwalker symbols crash.dmp > result.txt
+breakdown-parser symbols crash.dmp > result.txt
 ```
 ```
 OS       : Linux (0.0.0 Linux 4.4.172 #2 SMP Wed Jan 30 17:11:07 CST 2019 x86_64)
