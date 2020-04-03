@@ -1,11 +1,11 @@
 # Breakdown
 
-A library and example application for parsing Google Breakpad crash dumps on Windows (MinGW-only), macOS (untested) and Linux.
+Various applications and libraries for dumping symbols from binaries files and parsing crash dumps on Windows (MinGW-only), macOS (untested) and Linux.
 
-This library uses a [fork](https://github.com/NatronGitHub/breakpad) of Google Breakpad.
+Breakdown uses a [fork](https://github.com/NatronGitHub/breakpad) of Google Breakpad.
 
 ## Build and install
-Requires autotools, pkg-config, CMake (3.0+), a c++11 compatible compiler (only GCC tested) and libzip.
+Requires pkg-config, CMake (3.0+), a c++11 compatible compiler (only GCC tested) and libzip.
 
 ```
 git clone https://github.com/rodlie/breakdown
