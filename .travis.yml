@@ -10,5 +10,5 @@ script:
   - git submodule update -i --recursive
   - mkdir build && cd build
   - cmake .. && make
-  - cd ../tests && ./run.sh
+  - cd ../tests && sh run.sh
 
