@@ -48,6 +48,6 @@ int main(int argc, char** argv)
             }
         }
     }
-    std::cout << "Usage: stackwalker <SYMBOLS_STORAGE> <CRASH_DUMP>" << std::endl;
+    std::cout << "Usage: " << argv[0] << " <SYMBOLS_STORAGE> <CRASH_DUMP>" << std::endl;
     return 1;
 }

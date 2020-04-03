@@ -100,8 +100,8 @@ include_directories(
     ${ZIP_INCLUDE_DIRS}
 )
 
-add_executable(stackwalker ${BREAKDOWN}/main.cpp)
-target_link_libraries(stackwalker ${PROJECT_NAME})
+add_executable(breakdown-parser ${BREAKDOWN}/main.cpp)
+target_link_libraries(breakdown-parser ${PROJECT_NAME})
 
 add_library(${PROJECT_NAME}
             SHARED
@@ -136,7 +136,7 @@ if(NOT APPLE)
             ${CMAKE_INSTALL_DOCDIR}-${PROJECT_VERSION}
     )
     install(TARGETS
-            stackwalker
+            breakdown-parser
             RUNTIME
             DESTINATION bin
     )
@@ -154,4 +154,23 @@ if(NOT APPLE)
             ${BREAKDOWN}/breakdown.h
             DESTINATION include/${PROJECT_NAME}
     )
+    if(WIN32)
+        configure_file(${BREAKPAD_BIN}/src/tools/windows/dump_syms_dwarf/dump_syms.exe
+                       ${CMAKE_CURRENT_BINARY_DIR}/breakdown-dumper.exe
+                       COPYONLY
+        )
+        install(FILES
+                ${CMAKE_CURRENT_BINARY_DIR}/breakdown-dumper.exe
+                DESTINATION bin
+        )
+    elseif(UNIX NOT APPLE)
+        configure_file(${BREAKPAD_BIN}/src/tools/linux/dump_syms/dump_syms
+                       ${CMAKE_CURRENT_BINARY_DIR}/breakdown-dumper
+                       COPYONLY
+        )
+        install(FILES
+                ${CMAKE_CURRENT_BINARY_DIR}/breakdown-dumper
+                DESTINATION bin
+        )
+    endif()
 endif()

@@ -1,0 +1,44 @@
+OS       : Linux (0.0.0 Linux 4.4.172 #2 SMP Wed Jan 30 17:11:07 CST 2019 x86_64)
+TYPE     : SIGSEGV /0x00000000
+
+MODULE   : Natron-bin
+FUNCTION : Natron::crash_application()
+SOURCE   : Settings.cpp:2228
+
+MODULE   : Natron-bin
+FUNCTION : Natron::Settings::onKnobValueChanged(Natron::KnobI*, Natron::ValueChangedReasonEnum, double, Natron::ViewSpec, bool)
+SOURCE   : Settings.cpp:2360
+
+MODULE   : Natron-bin
+FUNCTION : Natron::KnobHolder::onKnobValueChanged_public(Natron::KnobI*, Natron::ValueChangedReasonEnum, double, Natron::ViewSpec, bool)
+SOURCE   : Knob.cpp:5996
+
+MODULE   : Natron-bin
+FUNCTION : Natron::KnobHolder::endChanges(bool)
+SOURCE   : Knob.cpp:5567
+
+MODULE   : Natron-bin
+FUNCTION : Natron::KnobHelper::evaluateValueChangeInternal(int, double, Natron::ViewSpec, Natron::ValueChangedReasonEnum, Natron::ValueChangedReasonEnum)
+SOURCE   : Knob.cpp:1700
+
+MODULE   : Natron-bin
+FUNCTION : Natron::KnobHelper::evaluateValueChange(int, double, Natron::ViewSpec, Natron::ValueChangedReasonEnum)
+SOURCE   : Knob.cpp:1724
+
+MODULE   : Natron-bin
+FUNCTION : Natron::KnobButton::trigger()
+SOURCE   : KnobTypes.cpp:499
+
+MODULE   : Natron-bin
+FUNCTION : Natron::KnobGuiButton::emitValueChanged(bool)
+SOURCE   : KnobGuiButton.cpp:188
+
+MODULE   : Natron-bin
+FUNCTION : Natron::KnobGuiButton::qt_static_metacall(QObject*, QMetaObject::Call, int, void**)
+SOURCE   : moc_KnobGuiButton.cpp:48
+
+MODULE   : libQtCore.so.4.8.7
+FUNCTION : 
+SOURCE   : 
+
+

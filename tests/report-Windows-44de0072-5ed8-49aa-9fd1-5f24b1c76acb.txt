@@ -1,0 +1,44 @@
+OS       : Windows NT (6.3.9600 )
+TYPE     : EXCEPTION_ACCESS_VIOLATION_WRITE
+
+MODULE   : Natron-bin.exe
+FUNCTION : Natron::crash_application
+SOURCE   : Settings.cpp:2232
+
+MODULE   : Natron-bin.exe
+FUNCTION : Natron::Settings::onKnobValueChanged
+SOURCE   : Settings.cpp:2364
+
+MODULE   : Natron-bin.exe
+FUNCTION : Natron::KnobHolder::onKnobValueChanged_public
+SOURCE   : Knob.cpp:6036
+
+MODULE   : Natron-bin.exe
+FUNCTION : Natron::KnobHolder::endChanges
+SOURCE   : Knob.cpp:5607
+
+MODULE   : Natron-bin.exe
+FUNCTION : Natron::KnobHelper::evaluateValueChangeInternal
+SOURCE   : Knob.cpp:1702
+
+MODULE   : Natron-bin.exe
+FUNCTION : Natron::KnobHelper::evaluateValueChange
+SOURCE   : Knob.cpp:1726
+
+MODULE   : Natron-bin.exe
+FUNCTION : Natron::KnobButton::trigger
+SOURCE   : KnobTypes.cpp:500
+
+MODULE   : Natron-bin.exe
+FUNCTION : Natron::KnobGuiButton::emitValueChanged
+SOURCE   : KnobGuiButton.cpp:189
+
+MODULE   : QtCore4.dll
+FUNCTION : 
+SOURCE   : 
+
+MODULE   : QtCore4.dll
+FUNCTION : 
+SOURCE   : 
+
+
