@@ -170,6 +170,7 @@ if(NOT APPLE)
         )
         install(FILES
                 ${CMAKE_CURRENT_BINARY_DIR}/breakdown-dumper
+                PERMISSIONS OWNER_READ OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
                 DESTINATION bin
         )
     endif()
