@@ -9,7 +9,7 @@ for i in $DUMPS;do
   echo "Testing $i"
   rm -f $i.tmp || true
   $PARSER symbols $i.dmp > $i.tmp
-  DIFF=`diff $i.txt $i.tmp`
+  DIFF=`diff -burN $i.txt $i.tmp`
   if [ ! -z "$DIFF" ]; then
     echo "$i: FAILED"
     echo "$DIFF"
