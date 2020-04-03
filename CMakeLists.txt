@@ -163,7 +163,7 @@ if(NOT APPLE)
                 ${CMAKE_CURRENT_BINARY_DIR}/breakdown-dumper.exe
                 DESTINATION bin
         )
-    elseif(UNIX NOT APPLE)
+    elseif(UNIX AND NOT APPLE)
         configure_file(${BREAKPAD_BIN}/src/tools/linux/dump_syms/dump_syms
                        ${CMAKE_CURRENT_BINARY_DIR}/breakdown-dumper
                        COPYONLY
