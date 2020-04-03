@@ -1,11 +1,11 @@
 # Breakdown
 
-A library for parsing Google Breakpad crash dumps on Windows (MinGW-only), macOS (untested) and Linux.
+A library and example application for parsing Google Breakpad crash dumps on Windows (MinGW-only), macOS (untested) and Linux.
 
-This library uses a fork of Google Breakpad.
+This library uses a [fork](https://github.com/NatronGitHub/breakpad) of Google Breakpad.
 
 ## Build and install
-Requires CMake (3.0+), a c++11 compatible compiler (only GCC tested) and libzip.
+Requires autotools, pkg-config, CMake (3.0+), a c++11 compatible compiler (only GCC tested) and libzip.
 
 ```
 git clone https://github.com/rodlie/breakdown
@@ -70,7 +70,7 @@ symbols
 2 directories, 1 file
 ```
 
-## Usage Example
+## Usage Example (library)
 
 ```
 #include <breakdown.h>
@@ -79,4 +79,20 @@ std::string filename = "crash.dmp";
 std::vector<std::string> storage;
 storage.push_back("symbols");
 std::string result = Breakdown::convertDumpToString(filename, storage);
+```
+
+## Usage Example (application)
+
+```
+stackwalker symbols crash.dmp > result.txt
+```
+```
+OS       : Linux (0.0.0 Linux 4.4.172 #2 SMP Wed Jan 30 17:11:07 CST 2019 x86_64)
+TYPE     : SIGSEGV /0x00000000
+
+MODULE   : Natron-bin
+FUNCTION : Natron::crash_application()
+SOURCE   : Settings.cpp:2228
+
+...
 ```
