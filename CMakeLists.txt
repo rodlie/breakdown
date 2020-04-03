@@ -55,7 +55,8 @@ pkg_search_module(ZIP REQUIRED libzip)
 
 configure_file(${BREAKDOWN}/breakdown.pc.in
                ${CMAKE_CURRENT_BINARY_DIR}/breakdown.pc
-               @ONLY)
+               @ONLY
+)
 
 if(NOT EXISTS ${BREAKPAD_SRC}/configure)
     execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
@@ -129,9 +130,15 @@ target_link_libraries(${PROJECT_NAME}
 if(NOT APPLE)
     install(FILES
             LICENSE
+            LICENSE.breakpad
             README.md
             DESTINATION
             ${CMAKE_INSTALL_DOCDIR}-${PROJECT_VERSION}
+    )
+    install(TARGETS
+            stackwalker
+            RUNTIME
+            DESTINATION bin
     )
     install(FILES
             ${CMAKE_CURRENT_BINARY_DIR}/breakdown.pc
