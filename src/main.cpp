@@ -33,21 +33,24 @@
 #include <breakdown.h>
 #include <iostream>
 
-int main(int argc, char** argv) 
-{ 
+int main(int argc, char** argv)
+{
+    std::string msg = std::string("Usage: ").append(argv[0]) + " <SYMBOLS_STORAGE> <CRASH_DUMP>";
     if (argc == 3) {
         std::string folder = argv[1];
         std::string file = argv[2];
         if (!folder.empty() && !file.empty()) {
             std::vector<std::string> storage;
             storage.push_back(folder);
-            std::string result = BreakDown::convertDumpToString(file, storage);
+            std::string result = Breakdown::generateCrashResultPlainText(file, storage);
             if (!result.empty()) {
                 std::cout << result << std::endl;
                 return 0;
-            }
+            } else { msg = "Failed to parse dump file!"; }
         }
+        std::cout << msg << std::endl;
+        return 1;
     }
-    std::cout << "Usage: " << argv[0] << " <SYMBOLS_STORAGE> <CRASH_DUMP>" << std::endl;
-    return 1;
+    std::cout << msg << std::endl;
+    return 0;
 }

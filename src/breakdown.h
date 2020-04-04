@@ -52,13 +52,39 @@
 #  define BREAKDOWN_EXPORT
 #endif
 
-class BREAKDOWN_EXPORT BreakDown
+class BREAKDOWN_EXPORT Breakdown
 {
 
 public:
-    /** @brief Convert Breakpad crash dump to human readable plain text */
-    static const std::string convertDumpToString(const std::string &fileName,
-                                                 const std::vector<std::string> &symbols);
+
+    struct CrashFrame
+    {
+        std::string module;
+        std::string function;
+        std::string source;
+        int line = 0;
+    };
+
+    struct CrashResult
+    {
+        std::string dump;
+        std::string platform;
+        std::string type;
+        std::vector<CrashFrame> frames;
+    };
+
+    /** @brief Generate crash result from Breakpad crash dump file */
+    static const CrashResult generateCrashResult(const std::string &filename,
+                                                 const std::vector<std::string> &storage,
+                                                 int truncate = 10);
+
+    /** @brief Generate crash result from Breakpad crash dump file in plain text */
+    static const std::string generateCrashResultPlainText(const std::string &filename,
+                                                          const std::vector<std::string> &storage);
+
+    /** @brief Generate crash result from Breakpad crash dump file in XML */
+    static const std::string generateCrashResultXML(const std::string &filename,
+                                                    const std::vector<std::string> &storage);
 };
 
 #endif // BREAKDOWN_H

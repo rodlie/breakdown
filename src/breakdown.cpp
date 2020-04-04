@@ -56,15 +56,16 @@ using google_breakpad::StackFrame;
 using google_breakpad::StackFrameSymbolizer;
 using google_breakpad::SymbolSupplier;
 
-const std::string BreakDown::convertDumpToString(const std::string &fileName,
-                                                 const std::vector<std::string> &symbols)
+const Breakdown::CrashResult Breakdown::generateCrashResult(const std::string &filename,
+                                                            const std::vector<std::string> &storage,
+                                                            int truncate)
 {
-    Minidump minidump(fileName);
+    Minidump minidump(filename);
     minidump.Read();
 
     scoped_ptr<SymbolSupplier> symbol_supplier;
-    if (!symbols.empty()) {
-        symbol_supplier.reset(new SimpleSymbolSupplier(symbols));
+    if (!storage.empty()) {
+        symbol_supplier.reset(new SimpleSymbolSupplier(storage));
     }
 
     BasicSourceLineResolver resolver;
@@ -72,24 +73,23 @@ const std::string BreakDown::convertDumpToString(const std::string &fileName,
     MinidumpProcessor minidump_processor(&symbolizer, true);
     ProcessState process_state;
     ProcessResult result = minidump_processor.Process(&minidump, &process_state);
+    Breakdown::CrashResult output;
 
-    std::string txt;
     if (result != google_breakpad::PROCESS_OK) {
-        return txt;
+        return output;
     }
 
     int requesting_thread = process_state.requesting_thread();
     if (process_state.crashed() && requesting_thread != -1) {
-        //txt.append("\n### CRASH REPORT ### \n\n");
-        txt.append(std::string("OS       : ").append(process_state.system_info()->os + " (" + process_state.system_info()->os_version +  ")\n"));
-        txt.append(std::string("TYPE     : ").append(process_state.crash_reason() + "\n\n"));
+
+        output.platform = process_state.system_info()->os + " " + process_state.system_info()->os_version;
+        output.type = process_state.crash_reason();
 
         const CallStack *crashing_stack = process_state.threads()->at(requesting_thread);
-        int frame_limit = 10;
         const unsigned kMaxThreadFrames = 100;
         const unsigned kTailFramesWhenTruncating = 10;
         int frame_count = crashing_stack->frames()->size();
-        frame_count = std::min(frame_count, frame_limit);
+        frame_count = std::min(frame_count, truncate);
         int last_head_frame = kMaxThreadFrames - kTailFramesWhenTruncating - 1;
         int first_tail_frame = frame_count - kTailFramesWhenTruncating;
 
@@ -99,25 +99,77 @@ const std::string BreakDown::convertDumpToString(const std::string &fileName,
             }
             const StackFrame *frame = crashing_stack->frames()->at(frame_index);
             if (!frame->module) { continue; }
-            std::string frame_module;
-            std::string frame_function;
-            std::string frame_file;
+            Breakdown::CrashFrame cframe;
             if (!frame->module->code_file().empty()) {
-                frame_module = PathnameStripper::File(frame->module->code_file());
+                cframe.module = PathnameStripper::File(frame->module->code_file());
             }
             if (!frame->function_name.empty()) {
-                frame_function = frame->function_name;
+                cframe.function = frame->function_name;
             }
             if (!frame->source_file_name.empty()) {
-                frame_file = PathnameStripper::File(frame->source_file_name);
-                frame_file.append(std::string(":").append(std::to_string(frame->source_line)));
+                cframe.source = frame->source_file_name;
+                cframe.line = frame->source_line;
             }
-            std::string result;
-            result.append(std::string("MODULE   : ").append(frame_module + "\n"));
-            result.append(std::string("FUNCTION : ").append(frame_function + "\n"));
-            result.append(std::string("SOURCE   : ").append(frame_file + "\n\n"));
-            txt.append(result);
+            output.frames.push_back(cframe);
         }
     }
-    return txt;
+
+    return output;
 }
+
+const std::string Breakdown::generateCrashResultPlainText(const std::string &filename,
+                                                          const std::vector<std::string> &storage)
+{
+    std::string result;
+    Breakdown::CrashResult report = Breakdown::generateCrashResult(filename, storage);
+    if (report.frames.size() == 0) { return result; }
+
+    result.append("OS       : " + report.platform + "\n");
+    result.append("TYPE     : " + report.type + "\n\n");
+
+    for (unsigned int i = 0; i < report.frames.size(); ++i) {
+        if (report.frames.at(i).module.empty()) { continue; }
+        std::string frame;
+        frame.append("MODULE   : " + report.frames.at(i).module + "\n");
+        if (!report.frames.at(i).function.empty()) {
+            frame.append("FUNCTION : " + report.frames.at(i).function + "\n");
+        }
+        if (!report.frames.at(i).source.empty()) {
+            frame.append("SOURCE   : " + report.frames.at(i).source + ":" + std::to_string(report.frames.at(i).line) + "\n\n");
+        }
+        result.append(frame);
+    }
+
+    return result;
+}
+
+const std::string Breakdown::generateCrashResultXML(const std::string &filename,
+                                                    const std::vector<std::string> &storage)
+{
+    std::string result;
+    Breakdown::CrashResult report = Breakdown::generateCrashResult(filename, storage);
+    if (report.frames.size() == 0) { return result; }
+
+    result.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+    result.append("<root>\n");
+    result.append("<platform>" + report.platform + "</platform>\n");
+    result.append("<type>" + report.type + "</type>\n");
+    for (unsigned int i = 0; i < report.frames.size(); ++i) {
+        if (report.frames.at(i).module.empty()) { continue; }
+        std::string frame = "<item>\n";
+        frame.append("<module>" + report.frames.at(i).module + "</module>\n");
+        if (!report.frames.at(i).function.empty()) {
+            frame.append("<function><![CDATA[" + report.frames.at(i).function + "]]></function>\n");
+        }
+        if (!report.frames.at(i).source.empty()) {
+            frame.append("<source>" + report.frames.at(i).source + "</source>\n");
+            frame.append("<line>" + std::to_string(report.frames.at(i).line) + "</line>\n");
+        }
+        frame.append("</item>\n");
+        result.append(frame);
+    }
+    result.append("</root>");
+
+    return result;
+}
+

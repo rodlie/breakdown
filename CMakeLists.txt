@@ -31,7 +31,7 @@
 #
 
 cmake_minimum_required(VERSION 3.0)
-project(Breakdown VERSION 1.0.0)
+project(Breakdown VERSION 2.0.0)
 
 include(GNUInstallDirs)
 
