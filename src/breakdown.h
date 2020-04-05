@@ -62,7 +62,7 @@ public:
         std::string module;
         std::string function;
         std::string source;
-        int line = 0;
+        int line;
     };
 
     struct CrashResult

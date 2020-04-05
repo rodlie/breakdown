@@ -25,14 +25,14 @@ make DESTDIR=<PACKAGE_LOCATION> install
     │   └── Breakdown
     │       └── breakdown.h
     ├── lib64
-    │   ├── libBreakdown.so -> libBreakdown.so.1
-    │   ├── libBreakdown.so.1 -> libBreakdown.so.1.0.0
-    │   ├── libBreakdown.so.1.0.0
+    │   ├── libBreakdown.so -> libBreakdown.so.2
+    │   ├── libBreakdown.so.2 -> libBreakdown.so.2.0.0
+    │   ├── libBreakdown.so.2.0.0
     │   └── pkgconfig
     │       └── breakdown.pc
     └── share
         └── doc
-            └── Breakdown-1.0.0
+            └── Breakdown-2.0.0
                 ├── LICENSE
                 ├── LICENSE.breakpad
                 └── README.md
@@ -82,7 +82,7 @@ symbols
 std::string filename = "crash.dmp";
 std::vector<std::string> storage;
 storage.push_back("symbols");
-std::string result = Breakdown::convertDumpToString(filename, storage);
+std::string result = Breakdown::generateCrashResultPlainText(filename, storage);
 ```
 
 ## Usage Example (application)
