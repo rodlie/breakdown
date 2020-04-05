@@ -81,10 +81,8 @@ const Breakdown::CrashResult Breakdown::generateCrashResult(const std::string &f
 
     int requesting_thread = process_state.requesting_thread();
     if (process_state.crashed() && requesting_thread != -1) {
-
         output.platform = process_state.system_info()->os + " " + process_state.system_info()->os_version;
         output.type = process_state.crash_reason();
-
         const CallStack *crashing_stack = process_state.threads()->at(requesting_thread);
         const unsigned kMaxThreadFrames = 100;
         const unsigned kTailFramesWhenTruncating = 10;
@@ -113,20 +111,15 @@ const Breakdown::CrashResult Breakdown::generateCrashResult(const std::string &f
             output.frames.push_back(cframe);
         }
     }
-
     return output;
 }
 
-const std::string Breakdown::generateCrashResultPlainText(const std::string &filename,
-                                                          const std::vector<std::string> &storage)
+const std::string Breakdown::generateCrashResultPlainText(const Breakdown::CrashResult report)
 {
     std::string result;
-    Breakdown::CrashResult report = Breakdown::generateCrashResult(filename, storage);
     if (report.frames.size() == 0) { return result; }
-
     result.append("OS       : " + report.platform + "\n");
     result.append("TYPE     : " + report.type + "\n\n");
-
     for (unsigned int i = 0; i < report.frames.size(); ++i) {
         if (report.frames.at(i).module.empty()) { continue; }
         std::string frame;
@@ -139,17 +132,21 @@ const std::string Breakdown::generateCrashResultPlainText(const std::string &fil
         }
         result.append(frame);
     }
-
     return result;
 }
 
-const std::string Breakdown::generateCrashResultXML(const std::string &filename,
-                                                    const std::vector<std::string> &storage)
+const std::string Breakdown::generateCrashResultPlainText(const std::string &filename,
+                                                          const std::vector<std::string> &storage)
+{
+    Breakdown::CrashResult report = Breakdown::generateCrashResult(filename, storage);
+    if (report.frames.size() == 0) { return std::string(); }
+    return Breakdown::generateCrashResultPlainText(report);
+}
+
+const std::string Breakdown::generateCrashResultXML(const Breakdown::CrashResult report)
 {
     std::string result;
-    Breakdown::CrashResult report = Breakdown::generateCrashResult(filename, storage);
     if (report.frames.size() == 0) { return result; }
-
     result.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
     result.append("<root>\n");
     result.append("<platform>" + report.platform + "</platform>\n");
@@ -169,7 +166,14 @@ const std::string Breakdown::generateCrashResultXML(const std::string &filename,
         result.append(frame);
     }
     result.append("</root>");
-
     return result;
+}
+
+const std::string Breakdown::generateCrashResultXML(const std::string &filename,
+                                                    const std::vector<std::string> &storage)
+{
+    Breakdown::CrashResult report = Breakdown::generateCrashResult(filename, storage);
+    if (report.frames.size() == 0) { return std::string(); }
+    return Breakdown::generateCrashResultXML(report);
 }
 

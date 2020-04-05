@@ -70,19 +70,21 @@ public:
         std::string dump;
         std::string platform;
         std::string type;
-        std::vector<CrashFrame> frames;
+        std::vector<Breakdown::CrashFrame> frames;
     };
 
     /** @brief Generate crash result from Breakpad crash dump file */
-    static const CrashResult generateCrashResult(const std::string &filename,
-                                                 const std::vector<std::string> &storage,
-                                                 int truncate = 10);
+    static const Breakdown::CrashResult generateCrashResult(const std::string &filename,
+                                                            const std::vector<std::string> &storage,
+                                                            int truncate = 10);
 
     /** @brief Generate crash result from Breakpad crash dump file in plain text */
+    static const std::string generateCrashResultPlainText(const Breakdown::CrashResult report);
     static const std::string generateCrashResultPlainText(const std::string &filename,
                                                           const std::vector<std::string> &storage);
 
     /** @brief Generate crash result from Breakpad crash dump file in XML */
+    static const std::string generateCrashResultXML(const Breakdown::CrashResult report);
     static const std::string generateCrashResultXML(const std::string &filename,
                                                     const std::vector<std::string> &storage);
 };
